@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
@@ -14,13 +16,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.reversecoder.sessiontimeout.engine.ResumableCountDownTimer;
+import com.reversecoder.sessiontimeout.engine.ResumableTimer;
+
 public final class SessionTimeout {
 
     private static Activity mCurrentActivity = null;
-    public static long timeoutDuration = 10000;
-    //    public static TimeoutSensorTask timeoutSensorTask;
+    public static long timeoutDuration = 5 * 60 * 1000;
     public static SessionTimeoutTask timeoutSensorTask;
-    public static PlayPauseCountDownTimer countDownTimer;
+    public static ResumableCountDownTimer countDownTimer;
     public static String DIALOG_TITLE = "ATTENTION:";
     public static String DIALOG_MESSAGE = "Your session is about to expire.";
     public static String DIALOG_BUTTON = "STAY SIGNED IN";
@@ -193,71 +197,7 @@ public final class SessionTimeout {
         }
     }
 
-//    public static class TimeoutSensorTask extends AsyncTask<Long, Void, Void> {
-//
-//        private static final String TAG = TimeoutSensorTask.class.getName();
-//        private static long lastUsed;
-//        PowerManager pm;
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            pm = (PowerManager) mCurrentActivity.getApplicationContext().getSystemService(Context.POWER_SERVICE);
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Long... params) {
-//            long idle = 0;
-//            this.touch();
-//            while(!isCancelled()){
-//                idle = System.currentTimeMillis() - lastUsed;
-//                try{
-//                    Thread.sleep(1000); //check every 1 seconds
-//                }catch (InterruptedException e){
-//                    Log.d(TAG, "TimeoutSensor interrupted!");
-//                }
-//                if(idle > params[0]){
-//                    idle = 0;
-//                    this.cancel(true);
-//                    if(pm.isScreenOn()) {
-//                        if(mCurrentActivity instanceof Activity){
-//                            AppDialogFragment appDialogFragment = new AppDialogFragment();
-//                            appDialogFragment.setCancelable(false);
-//                            appDialogFragment.show(((Activity) mCurrentActivity).getFragmentManager(), "dialog");
-//                        }else if(mCurrentActivity instanceof AppCompatActivity){
-//                            AppCompatDialogFragment appCompatDialogFragment = new AppCompatDialogFragment();
-//                            appCompatDialogFragment.setCancelable(false);
-//                            appCompatDialogFragment.show(((AppCompatActivity) mCurrentActivity).getSupportFragmentManager(), "compatdialog");
-//                        }
-//                    }else{
-//                        if(mCurrentActivity != null) {
-//                            mCurrentActivity.finishAffinity();
-//                        }
-//                        System.exit(0);
-//                    }
-//                }
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            super.onCancelled();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//        }
-//
-//        public static synchronized void touch(){
-//            lastUsed = System.currentTimeMillis();
-//        }
-//
-//    }
-
-
-    public static class SessionTimeoutTask extends PlayPauseTimer {
+    public static class SessionTimeoutTask extends ResumableTimer {
         private static long lastUsed;
         PowerManager pm;
         long idle = 0;
@@ -292,7 +232,11 @@ public final class SessionTimeout {
                         }
                     } else {
                         if (mCurrentActivity != null) {
-                            mCurrentActivity.finishAffinity();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                mCurrentActivity.finishAffinity();
+                            } else {
+                                finishCurrentActivity();
+                            }
                         }
                         System.exit(0);
                     }
@@ -317,6 +261,13 @@ public final class SessionTimeout {
     }
 
 
+    private static void finishCurrentActivity() {
+        Intent intent = mCurrentActivity.getIntent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        mCurrentActivity.finish();
+    }
+
+
     public static class AppDialogFragment extends android.app.DialogFragment {
         public AppDialogFragment() {
             super();
@@ -328,7 +279,7 @@ public final class SessionTimeout {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             final View view = inflater.inflate(R.layout.session_dialog, null);
             final TextView sessionText = (TextView) view.findViewById(R.id.session_text);
-            countDownTimer = new PlayPauseCountDownTimer(31000, 1000) {
+            countDownTimer = new ResumableCountDownTimer(31000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     long diffSeconds = millisUntilFinished / 1000 % 60;
@@ -338,7 +289,11 @@ public final class SessionTimeout {
                 @Override
                 public void onFinish() {
                     if (mCurrentActivity != null) {
-                        mCurrentActivity.finishAffinity();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            mCurrentActivity.finishAffinity();
+                        } else {
+                            finishCurrentActivity();
+                        }
                     }
                     System.exit(0);
                 }
@@ -377,7 +332,7 @@ public final class SessionTimeout {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             final View view = inflater.inflate(R.layout.session_dialog, null);
             final TextView sessionText = (TextView) view.findViewById(R.id.session_text);
-            countDownTimer = new PlayPauseCountDownTimer(31000, 1000) {
+            countDownTimer = new ResumableCountDownTimer(31000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     long diffSeconds = millisUntilFinished / 1000 % 60;
@@ -387,7 +342,11 @@ public final class SessionTimeout {
                 @Override
                 public void onFinish() {
                     if (mCurrentActivity != null) {
-                        mCurrentActivity.finishAffinity();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            mCurrentActivity.finishAffinity();
+                        } else {
+                            finishCurrentActivity();
+                        }
                     }
                     System.exit(0);
                 }

@@ -1,10 +1,10 @@
-package com.reversecoder.sessiontimeout;
+package com.reversecoder.sessiontimeout.engine;
 
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 
-public abstract class PlayPauseCountDownTimer {
+public abstract class ResumableCountDownTimer {
     /**
      * Millis since epoch when alarm should stop.
      */
@@ -30,7 +30,7 @@ public abstract class PlayPauseCountDownTimer {
      * @param countDownInterval The interval along the way to receive
      *                          {@link #onTick(long)} callbacks.
      */
-    public PlayPauseCountDownTimer(long millisInFuture, long countDownInterval) {
+    public ResumableCountDownTimer(long millisInFuture, long countDownInterval) {
         mMillisInFuture = millisInFuture;
         mCountdownInterval = countDownInterval;
     }
@@ -48,7 +48,7 @@ public abstract class PlayPauseCountDownTimer {
     /**
      * Start the countdown.
      */
-    public synchronized final PlayPauseCountDownTimer start() {
+    public synchronized final ResumableCountDownTimer start() {
         if (mMillisInFuture <= 0) {
             onFinish();
             return this;
@@ -101,7 +101,7 @@ public abstract class PlayPauseCountDownTimer {
         @Override
         public void handleMessage(Message msg) {
 
-            synchronized (PlayPauseCountDownTimer.this) {
+            synchronized (ResumableCountDownTimer.this) {
                 if (!mPaused) {
                     final long millisLeft = mStopTimeInFuture - SystemClock.elapsedRealtime();
 

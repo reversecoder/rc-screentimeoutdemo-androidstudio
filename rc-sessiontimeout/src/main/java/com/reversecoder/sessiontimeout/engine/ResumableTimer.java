@@ -1,11 +1,11 @@
-package com.reversecoder.sessiontimeout;
+package com.reversecoder.sessiontimeout.engine;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public abstract class PlayPauseTimer {
+public abstract class ResumableTimer {
 
     public static final int DURATION_INFINITY = -1;
     private volatile boolean isRunning = false;
@@ -18,9 +18,9 @@ public abstract class PlayPauseTimer {
 
     /**
      * Default constructor which sets the interval to 1000 ms (1s) and the
-     * duration to {@link PlayPauseTimer#DURATION_INFINITY}
+     * duration to {@link ResumableTimer#DURATION_INFINITY}
      */
-    public PlayPauseTimer() {
+    public ResumableTimer() {
         this(1000, -1);
     }
 
@@ -28,7 +28,7 @@ public abstract class PlayPauseTimer {
      * @param interval The time gap between each tick in millis.
      * @param duration The period in millis for which the timer should run. Set it to {@code Timer#DURATION_INFINITY} if the timer has to run indefinitely.
      */
-    public PlayPauseTimer(long interval, long duration) {
+    public ResumableTimer(long interval, long duration) {
         this.interval = interval;
         this.duration = duration;
         this.elapsedTime = 0;
@@ -46,7 +46,7 @@ public abstract class PlayPauseTimer {
             @Override
             public void run() {
                 onTick();
-                elapsedTime += PlayPauseTimer.this.interval;
+                elapsedTime += ResumableTimer.this.interval;
                 if (duration > 0) {
                     if (elapsedTime >= duration) {
                         onFinish();
@@ -107,7 +107,7 @@ public abstract class PlayPauseTimer {
      */
     public long getRemainingTime() {
         if (this.duration < 0) {
-            return PlayPauseTimer.DURATION_INFINITY;
+            return ResumableTimer.DURATION_INFINITY;
         } else {
             return duration - elapsedTime;
         }
