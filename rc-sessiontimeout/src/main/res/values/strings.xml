@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name_rc_screentimeout">rc-screentimeout</string>
+
+    <string name="dialog_textview">Session will expire in: %s seconds.</string>
+    <string name="dialog_btton">STAY SIGNED IN</string>
+    <string name="dialog_message">Your session is about to expire.</string>
+    <string name="dialog_title">ATTENTION:</string>
 </resources>

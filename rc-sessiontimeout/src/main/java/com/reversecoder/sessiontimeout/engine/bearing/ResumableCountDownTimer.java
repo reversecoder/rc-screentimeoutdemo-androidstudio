@@ -1,9 +1,12 @@
-package com.reversecoder.sessiontimeout.engine;
+package com.reversecoder.sessiontimeout.engine.bearing;
 
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 
+/**
+ * @author Md. Rashsadul Alam
+ */
 public abstract class ResumableCountDownTimer {
     /**
      * Millis since epoch when alarm should stop.

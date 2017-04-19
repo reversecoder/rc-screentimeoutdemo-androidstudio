@@ -1,10 +1,13 @@
-package com.reversecoder.sessiontimeout.engine;
+package com.reversecoder.sessiontimeout.engine.bearing;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Md. Rashsadul Alam
+ */
 public abstract class ResumableTimer {
 
     public static final int DURATION_INFINITY = -1;

@@ -5,10 +5,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.reversecoder.sessiontimeout.SessionTimeout;
+import com.reversecoder.sessiontimeout.engine.activity.SessionTimeoutAppCompatActivity;
+import com.reversecoder.sessiontimeout.engine.injector.SessionTimeoutManager;
 import com.reversecoder.sessiontimeout.demo.R;
 
-public class MainActivity extends SessionTimeout.TimeoutCompatActivity {
+/**
+ * @author Md. Rashsadul Alam
+ */
+public class MainActivity extends SessionTimeoutAppCompatActivity {
 
     Button btnStartStop;
     Button btnGetDuration;
@@ -36,21 +40,13 @@ public class MainActivity extends SessionTimeout.TimeoutCompatActivity {
     }
 
     private void initAction() {
-        //set durations in minutes
-        SessionTimeout.setTimeoutDuration(5000);
+        SessionTimeoutManager.startSessionTimeoutTask(5000);
 
-        //start the sensor
-        SessionTimeout.start();
-
-
-        //You can also simply call:
-        //TimeoutSensor.start(1); where the argument passed is the duration in minutes.
-
-        if (SessionTimeout.timeoutSensorTask != null) {
-            tvStatus.setText(SessionTimeout.timeoutSensorTask.isRunning() ? "Status: RUNNING" : "Status: CANCELLED");
-            tvDuration.setText("Current duration: " + String.valueOf(SessionTimeout.getTimeoutDuration()));
-            etDuration.setText(String.valueOf(SessionTimeout.getTimeoutDuration()));
-            btnStartStop.setText(SessionTimeout.timeoutSensorTask.isRunning() ? "STOP" : "START");
+        if (SessionTimeoutManager.sessionTimeoutTask != null) {
+            tvStatus.setText(SessionTimeoutManager.sessionTimeoutTask.isRunning() ? "Status: RUNNING" : "Status: CANCELLED");
+            tvDuration.setText("Current duration: " + String.valueOf(SessionTimeoutManager.getSessionTimeoutDuration()));
+            etDuration.setText(String.valueOf(SessionTimeoutManager.getSessionTimeoutDuration()));
+            btnStartStop.setText(SessionTimeoutManager.sessionTimeoutTask.isRunning() ? "STOP" : "START");
         }
     }
 }
