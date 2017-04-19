@@ -1,13 +1,18 @@
 package com.reversecoder.sessiontimeout.demo.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.reversecoder.sessiontimeout.engine.activity.SessionTimeoutAppCompatActivity;
+import com.reversecoder.sessiontimeout.engine.bearing.SessionTimeoutDialogCallback;
 import com.reversecoder.sessiontimeout.engine.injector.SessionTimeoutManager;
 import com.reversecoder.sessiontimeout.demo.R;
+
+import static com.reversecoder.sessiontimeout.engine.injector.SessionTimeoutManager.startSessionTimeoutTask;
 
 /**
  * @author Md. Rashsadul Alam
@@ -40,6 +45,14 @@ public class MainActivity extends SessionTimeoutAppCompatActivity {
     }
 
     private void initAction() {
+        SessionTimeoutManager.initSessionTimeoutManager(new SessionTimeoutDialogCallback() {
+            @Override
+            public void sessionTimeoutButtonClick(DialogInterface dialog) {
+                Toast.makeText(MainActivity.this, "Signed out", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                startSessionTimeoutTask();
+            }
+        });
         SessionTimeoutManager.startSessionTimeoutTask(5000);
 
         if (SessionTimeoutManager.sessionTimeoutTask != null) {

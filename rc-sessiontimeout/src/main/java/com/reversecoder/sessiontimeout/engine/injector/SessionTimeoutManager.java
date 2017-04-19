@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 
+import com.reversecoder.sessiontimeout.engine.bearing.SessionTimeoutDialogCallback;
 import com.reversecoder.sessiontimeout.engine.bearing.ResumableCountDownTimer;
 import com.reversecoder.sessiontimeout.engine.piston.SessionTimeoutTask;
 
@@ -16,6 +17,7 @@ public final class SessionTimeoutManager {
     public static long sessionTimeoutDuration = 5 * 60 * 1000;
     public static SessionTimeoutTask sessionTimeoutTask;
     public static ResumableCountDownTimer sessionTimeoutCountDownTimer;
+    private static SessionTimeoutDialogCallback sessionTimeoutDialogCallback;
 
     public static void startSessionTimeoutTask(int timeDuration) {
         cancelSessionTimeoutTask();
@@ -35,8 +37,20 @@ public final class SessionTimeoutManager {
         sessionTimeoutTask.start();
     }
 
-    public static void setSessionTimeoutDuration(int timeDuration) {
-        sessionTimeoutDuration = timeDuration;
+    public static void initSessionTimeoutManager(SessionTimeoutDialogCallback timeoutDialogCallback) {
+        setSessionTimeoutDialogCallback(timeoutDialogCallback);
+    }
+
+    public static void setSessionTimeoutDialogCallback(SessionTimeoutDialogCallback timeoutDialogCallback){
+        sessionTimeoutDialogCallback=timeoutDialogCallback;
+    }
+
+    public static SessionTimeoutDialogCallback getSessionTimeoutDialogCallback(){
+        return sessionTimeoutDialogCallback;
+    }
+
+    public static void setSessionTimeoutDuration(int timeDurationInSecond) {
+        sessionTimeoutDuration = timeDurationInSecond;
     }
 
     public static long getSessionTimeoutDuration() {
