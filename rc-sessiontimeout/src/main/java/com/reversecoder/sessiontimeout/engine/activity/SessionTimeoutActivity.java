@@ -3,6 +3,7 @@ package com.reversecoder.sessiontimeout.engine.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.WindowManager;
 
 import static com.reversecoder.sessiontimeout.engine.injector.SessionTimeoutManager.cancelSessionTimeoutCountDownTimer;
 import static com.reversecoder.sessiontimeout.engine.injector.SessionTimeoutManager.cancelSessionTimeoutTask;
@@ -35,6 +36,8 @@ public class SessionTimeoutActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         pauseSessionTimeoutTask();
 
         pauseSessionTimeoutCountDownTimer();
@@ -43,6 +46,8 @@ public class SessionTimeoutActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setCurrentActivity(this);
 
         resumeSessionTimeoutTask();
