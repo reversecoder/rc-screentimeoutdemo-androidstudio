@@ -29,6 +29,7 @@ public class AppDialogFragment extends android.app.DialogFragment {
     public String DIALOG_POSITIVE_BUTTON = "";
     public String DIALOG_NEGATIVE_BUTTON = "";
     public String DIALOG_MESSAGE = "";
+    private Dialog sessionTimeoutDialog;
 
     public AppDialogFragment() {
         super();
@@ -49,8 +50,16 @@ public class AppDialogFragment extends android.app.DialogFragment {
 
             @Override
             public void onFinish() {
-                finishCurrentActivity();
-                System.exit(0);
+                destroySessionTimeoutCountDownTimer();
+                destroySessionTimeoutTask();
+
+                if (getSessionTimeoutDialogCallback() != null) {
+                    getSessionTimeoutDialogCallback().sessionTimeoutButtonClick(sessionTimeoutDialog);
+                } else {
+                    dismiss();
+                    finishCurrentActivity();
+                    System.exit(0);
+                }
             }
         };
         sessionTimeoutCountDownTimer.start();
@@ -75,15 +84,16 @@ public class AppDialogFragment extends android.app.DialogFragment {
                                 if (getSessionTimeoutDialogCallback() != null) {
                                     getSessionTimeoutDialogCallback().sessionTimeoutButtonClick(dialog);
                                 } else {
+                                    dismiss();
                                     finishCurrentActivity();
                                     System.exit(0);
-                                    dismiss();
                                 }
                             }
                         }
 
                 );
-        return builder.create();
+        sessionTimeoutDialog = builder.create();
+        return sessionTimeoutDialog;
     }
 
 

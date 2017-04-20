@@ -48,8 +48,8 @@ public class MainActivity extends SessionTimeoutAppCompatActivity {
         SessionTimeoutManager.initSessionTimeoutManager(new SessionTimeoutDialogCallback() {
             @Override
             public void sessionTimeoutButtonClick(DialogInterface dialog) {
-                Toast.makeText(MainActivity.this, "Signed out", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                Toast.makeText(MainActivity.this, "Signed out", Toast.LENGTH_SHORT).show();
                 startSessionTimeoutTask();
             }
         });
